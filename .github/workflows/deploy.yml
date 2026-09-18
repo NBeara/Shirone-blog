@@ -1,0 +1,36 @@
+name: Deploy Shirone Blog to Vercel
+
+# Theme pushes deploy through Vercel's Git integration.
+on:
+  repository_dispatch:
+    types: [content-updated]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-vercel
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  trigger-vercel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger Vercel Build
+        env:
+          VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          set -euo pipefail
+          if [ -z "$VERCEL_DEPLOY_HOOK" ]; then
+            echo "::error::Set VERCEL_DEPLOY_HOOK in the theme repository Actions secrets."
+            exit 1
+          fi
+          curl --fail --silent --show-error --retry 3 --retry-delay 2 \
+            --max-time 30 --request POST "$VERCEL_DEPLOY_HOOK"
+
+      - name: Summarize Trigger
+        run: |
+          echo "Vercel build requested. Check Vercel for deployment completion." >> "$GITHUB_STEP_SUMMARY"
+          echo "Content uses Vercel CONTENT_REPO_REF (normally main), not the dispatch SHA." >> "$GITHUB_STEP_SUMMARY"
