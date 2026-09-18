@@ -16,3 +16,101 @@
   > :is(h1, h2, h3):first-child:not(:where([class~="not-prose"], [class~="not-prose"] *)) {
   margin-top: 0;
 }
+
+/* Mdmdt-inspired document rhythm, reimplemented with Shirone tokens.
+ * Only post prose participates: site pages and not-prose widgets retain their
+ * own presentation. The route attribute also covers permalinks, decrypted
+ * posts and Swup navigation without an extra client runtime.
+ * Visual reference: https://github.com/cayxc/Mdmdt (no Typora CSS imported).
+ */
+[data-current-page="post"] .markdown-content {
+  --tw-prose-body: var(--on-surface);
+  --tw-prose-headings: var(--on-surface);
+  --tw-prose-bold: var(--on-surface);
+  --tw-prose-quotes: var(--on-surface-variant);
+
+  :where(p, li):not(:where(.not-prose, .not-prose *)) {
+    line-height: calc(var(--m3e-space-6) + var(--m3e-space-1));
+  }
+
+  :where(p):not(:where(.not-prose, .not-prose *)) {
+    margin-block: var(--m3e-space-4);
+    overflow-wrap: anywhere;
+  }
+
+  :where(h1):not(:where(.not-prose, .not-prose *)) {
+    font: var(--m3e-type-headline-large);
+  }
+
+  :where(h2):not(:where(.not-prose, .not-prose *)) {
+    font: var(--m3e-type-headline-medium);
+  }
+
+  :where(h3):not(:where(.not-prose, .not-prose *)) {
+    font: var(--m3e-type-headline-small);
+  }
+
+  :where(h4):not(:where(.not-prose, .not-prose *)) {
+    font: var(--m3e-type-title-large);
+  }
+
+  :where(h5, h6):not(:where(.not-prose, .not-prose *)) {
+    font: var(--m3e-type-title-medium);
+  }
+
+  :is(h1, h2, h3, h4, h5, h6):not(:where(.not-prose, .not-prose *)) {
+    margin-block: var(--m3e-space-8) var(--m3e-space-4);
+    font-weight: 700;
+    text-wrap: pretty;
+    overflow-wrap: anywhere;
+  }
+
+  > :is(h1, h2, h3, h4, h5, h6):first-child,
+  > section:first-child > :is(h1, h2, h3, h4, h5, h6):first-child {
+    margin-top: 0;
+  }
+
+  :where(blockquote):not(:where(.not-prose, .not-prose *)) {
+    margin-block: var(--m3e-space-6);
+    padding: var(--m3e-space-4) var(--m3e-space-5);
+    border: 0;
+    border-inline-start: var(--m3e-space-1) solid var(--primary);
+    border-radius: var(--shape-corner-s);
+    background: var(--surface-container-low);
+    color: var(--on-surface-variant);
+    font-style: normal;
+    font-weight: inherit;
+
+    &::before {
+      content: none;
+    }
+
+    > :first-child {
+      margin-top: 0;
+    }
+
+    > :last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  :where(p, li, h1, h2, h3, h4, h5, h6) > code:not(:where(.not-prose, .not-prose *)) {
+    color: var(--primary);
+    background: var(--surface-container);
+    border-radius: var(--shape-corner-xs);
+    overflow-wrap: anywhere;
+  }
+
+  :where(th + th, td + td):not(:where(.not-prose, .not-prose *)) {
+    border-inline-start: 1px solid var(--outline-variant);
+  }
+
+  :where(tbody tr:nth-child(even)):not(:where(.not-prose, .not-prose *)) {
+    background: var(--surface-container-low);
+  }
+
+  :where(hr):not(:where(.not-prose, .not-prose *)) {
+    margin-block: var(--m3e-space-8);
+    border-color: var(--outline-variant);
+  }
+}
